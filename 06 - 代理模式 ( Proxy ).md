@@ -51,8 +51,8 @@
    * Proxy Pattern - 為了控制內部執行類別與外界的接觸 ( 包裝另一個物件來控制針對它的接觸 )
 <br/>
 
-> Q：Adaptor Pattern 跟 Proxy Pattern 看起來也很像，都是在其他物件的前面將請求轉傳給他們???
-  * Adaptor Pattern - 會改變被轉接的物件的介面 ( 包裝另一個物件，並為它提供不同的介面 )
+> Q：Adapter Pattern 跟 Proxy Pattern 看起來也很像，都是在其他物件的前面將請求轉傳給他們???
+  * Adapter Pattern - 會改變被轉接的物件的介面 ( 包裝另一個物件，並為它提供不同的介面 )
   * Proxy Pattern - 只會實作相同的物件介面
 
 
