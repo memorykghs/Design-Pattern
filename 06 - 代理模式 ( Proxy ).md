@@ -55,6 +55,14 @@
   * Adapter Pattern - 會改變被轉接的物件的介面 ( 包裝另一個物件，並為它提供不同的介面 )
   * Proxy Pattern - 只會實作相同的物件介面
 
+#### 優點
+1. 可以擴充目標物件的功能
+2. 將 Client 端跟目標物件分離，降低系統的耦合，增加程式的可擴充性。
+
+#### 缺點
+1. 增加系統中類別的數量。
+2. Client 端和目標物件中間多了一個帶禮物建，造成請求處理速度變慢。
+3. 系統的複雜度提高。
 
 ## 其他代理
 | 代理類型 | 說明 | 實際應用 |
@@ -70,4 +78,5 @@
 ## 參考
 * https://refactoring.guru/design-patterns/proxy
 * https://github.com/ChiungjuCheng/SpringSecurity/blob/main/0_%E5%8E%9F%E7%90%86/0_1_Filter%E6%9E%B6%E6%A7%8B.md
+* https://ithelp.ithome.com.tw/articles/10245445
 * O'REILLY - 深入淺出設計模式
