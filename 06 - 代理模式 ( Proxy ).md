@@ -18,6 +18,13 @@
 ![](/images/proxy-3.png)
 
 ## UML
+在還沒有使用 Proxy 之前，UML 如下：
+![](/images/proxy-6.png)
+
+Client 端會直接宣告 `ServiceInterface service = new Servie()`，直接拿到實際執行邏輯的 `Service` 物件。
+
+而使用 Proxy 之後的 UML 會多出一個 Proxy 類別，該類別同樣實作 `ServiceInterface` 介面，只是內部會有私有屬性存取 `Service` 物件。
+
 ![](/images/proxy-4.png)
 
 1. Service Interface 決定了服務的接口，Proxy 代理必須依照該接口方法，才能偽裝成服務對象。
@@ -44,6 +51,116 @@
 ![](/images/proxy-5.png)
 
 ## 實作
+* [sample code](https://github.com/memorykghs/Design-Pattern/tree/proxy)
+
+```
+src
+  |--com.team.proxy
+    |--ExPartner.java
+    |--DivorceService.java
+    |--LawyerProxy.java
+    |--Lawyer.java
+```
+
+###### Step 1
+首先建立前伴侶類別 ( Client 端 ) 。
+
+* `ExPartner.java`
+```java
+public class ExPartner {
+    public static void main(String[] args) {
+	
+    }
+}
+```
+<br/>
+
+###### Step 2
+建立離婚服務介面，介面內有三個方法。
+```java
+public interface DivorceService {
+
+    /** 財產分配 */
+    public BigDecimal propertyDistribute();
+
+    /** 要慰撫金 */
+    public BigDecimal getComfortMoney();
+
+    /** 要贍養費 */
+    public BigDecimal getAlimony();
+
+}
+```
+<br/>
+
+###### Step 3
+建立實際處理離婚事務的律師類別，它會實作 `Service` 介面，也就是實作 `DivorceService` 這個離婚服務介面。
+```java
+public class Lawyer implements DivorceService {
+
+    @Override
+    public BigDecimal propertyDistribute() {
+        System.out.println("帳戶只剩100塊");
+        return new BigDecimal("50");
+    }
+
+    @Override
+    public BigDecimal getComfortMoney() {
+        System.out.println("不是事主的錯，所以不用賠");
+        return BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal getAlimony() {
+        System.out.println("沒有小孩，哪來的贍養費");
+        return BigDecimal.ZERO;
+    }
+}
+```
+<br/>
+
+###### Step 4
+然後建立代理類別，代理也會實作 `DivorceService` 介面，只是會有私有屬性 `Lawyer`，在每個 `@Override` 方法中就都是直接呼叫 `Lawyer` 去做事。
+```java
+public class LawyerProxy implements DivorceService {
+
+    private Lawyer lawyer = new Lawyer();
+
+    @Override
+    public BigDecimal propertyDistribute() {
+        System.out.println("財產分配 - 律師的答覆：");
+        return lawyer.propertyDistribute();
+    }
+
+    @Override
+    public BigDecimal getComfortMoney() {
+        System.out.println("撫慰金 - 律師的答覆：");
+        return lawyer.getComfortMoney();
+    }
+
+    @Override
+    public BigDecimal getAlimony() {
+        System.out.println("贍養費 - 律師的答覆：");
+        return lawyer.getAlimony();
+    }
+}
+```
+<br/>
+
+###### Step 5
+最後於 `ExPartner` 用戶端建立服務實例，而實際呼叫的對象其實是代理類。
+```java
+public class ExPartner {
+    public static void main(String[] args) {
+        DivorceService service = new LawyerProxy();
+        service.propertyDistribute();
+        service.getComfortMoney();
+        service.getAlimony();
+    }
+}
+```
+
+![](/images/proxy-7.png)
 
 ## 小結
 > Q：Proxy Pattern 跟 Decorator Pattern 很像，都是將某個物件包再另一個裡面，他們之間的差異???
