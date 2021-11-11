@@ -18,7 +18,7 @@
 ![](/images/proxy-3.png)
 
 ## UML
-在還沒有使用 Proxy 之前，UML 如下：
+在還沒有使用 Proxy 之前，UML 如下：<br>
 ![](/images/proxy-6.png)
 
 Client 端會直接宣告 `ServiceInterface service = new Servie()`，直接拿到實際執行邏輯的 `Service` 物件。
