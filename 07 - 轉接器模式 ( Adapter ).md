@@ -59,5 +59,7 @@
 #### 缺點
 * 程式碼整體的複雜度增加，因為需要新增轉接器的接口介面和實作類別。
 
+![](/images/icon-question.png) Proxy Pattern 一定都要從 Client 端建立實際的服務對象傳入??? [範例](https://matthung0807.blogspot.com/2020/11/java-proxy-pattern.html)
+
 ## 參考
 * https://refactoringguru.cn/design-patterns/adapter
