@@ -13,6 +13,7 @@
 那麼羊皮 ( 轉接器 ) 做了什麼呢，首先它靠外表成功的偽裝成羊 ( 具有與目標對象相同的接口 )。羊群知道混入了一隻披著羊皮的狼嗎?可能不知道! ( 呼叫轉接器方法的對象很有可能不知道轉接器的存在 ) ~~因為羊群沒有想過有狼會把同伴的皮剝下來當煙霧彈~~。
 
 講點正經的，另外一個例子是如果想要做一個監控市場股價的 APP，但股票資訊平台的 API 只提供 XML 格式的檔案，而分析用的第三方資源庫則是必須接收 JSON 格式資料。這時候就需要在應用程式中做一個轉接器，將 XML 資料轉換為 JSON 格式。
+
 ![](/images/adapter-1.png)
 
 轉接器模式痛過封裝某個對象，將複雜的轉換過程隱藏起來。被封裝的對象甚至察覺不到轉接器的存在。除了轉換不同格式的數據外，轉接器模式還有助於不同接口的介面之間的合作，其運作方式如下：
@@ -30,6 +31,12 @@
 <br/>
 
 ## UML
+在還沒有使用 Adapter Pattern 之前，且可以改變任一方的源碼的情況下，我們需要在 Client 端或是 Service 端自行做轉換，UML可能會長的像下面這樣。<br/>
+
+![](/images/adapter-6.png)
+
+而當使用 Adapter Pattern 之後，UML 如下：<br/>
+
 ![](/images/adapter-3.png)
 
 1. 客戶端是一個爆含當前應用程式業務邏輯的類別。
@@ -48,10 +55,114 @@
     > The client code doesn't get coupled to the concrete adapter class as long as it works with the adapter via the client interface. Thanks to this, you can introduce new types of adapters into the program without breaking the existing client code. This can be useful when the interface of the service class gets changed or replaced: you can just create a new adapter class without changing the client code.
 
 ## 實際應用
+開源項目中有不少使用 Adapter Pattern 的例子，不過大部分我們可能不會直接的用 `XXXAdapter` 作為類別的命名。常見的有 Spring MVC 中的 `NamedParameterJdbcTemplate`，以及 Spring Security 的 `WebSecurityConfigurerAdapter`。
+
+Spring MVC 的 `NamedParameterJdbcTemplate` 之所以是 Adapter Pattern，是因為當要再 SQL 中使用 `in` 或是其他必須傳入某個範圍述職的語法時，在原本的 `JdbcTemplate` 中是使用佔位符 `?` 的先後順序，將參數傳入，範例如下。
+
+```sql
+select STUDENT_ID from HISTORY_EXAM where SCORE in (? ,? ,? ,? ,?);
+```
+
+而 `NamedParameterJdbcTemplate` 則可已給定參數名稱如 `:score` 作為佔位符來帶入參數，這樣一來相對直觀，也不需要調整傳入參數的順序。
+```sql
+select STUDENT_ID from HISTORY_EXAM where SCORE in :score;
+```
+<br/>
+
+那為什麼是 Adapter Pattern 呢?是因為 `NamedParameterJdbcTemplate` 其實是對 `JdbcTemplate` 做包裝，實際上操作資料庫仍然是由 `JdbcTemplate` 進行的，不過他改變了使用者傳入參數的方式。<br/>
+
+![](/images/adapter-5.png)
 
 ## 實作
+![](/images/adapter-7.png)
+
+首先建立一個用呼叫羊的介面 `BeSheep`，裡面有一個方法 `eatGrass()`。
+```java
+public interface BeSheep {
+	public void eatGrass();
+}
+```
+
+再來建立一個其他生物轉換介面，規定一定要有某一些方法，也就是 `Adaptee` 介面的角色。
+```java
+public interface AnimalTransfer {
+
+	public String transferToSheep();
+	
+	public void origin();
+}
+```
+
+假設現在有灰狼跟白狼都想偷偷地批羊皮混進羊群裡，所以針對這兩種不同生物，我們要各自建立一個類別。這兩個類別都要去實作 `AnimalTransfer` 介面的方法。
+```java
+public class WhiteWolfTransfer implements AnimalTransfer{
+
+	@Override
+	public String transferToSheep() {
+		return "Eat grass";
+	}
+
+	@Override
+	public void origin() {
+		System.out.println("原本是白狼");
+	}
+
+}
+```
+```java
+public class GrayWolfTransfer implements AnimalTransfer{
+
+	@Override
+	public String transferToSheep() {
+		return "Eat grass";
+	}
+
+	@Override
+	public void origin() {
+		System.out.println("原本是灰狼");
+	}
+
+}
+```
+
+接著，套入最重要的角色 `SheepAdapter`，`SheepAdapter` 需要實作客戶端規定的介面方法。
+```java
+public class SheepAdapter implements BeSheep{
+	
+	private AnimalTransfer animalTransfer;
+	
+	public SheepAdapter(AnimalTransfer animalTransfer) {
+		this.animalTransfer = animalTransfer;
+	}
+
+	@Override
+	public void eatGrass() {
+		animalTransfer.origin();
+		System.out.println(animalTransfer.transferToSheep());
+	}
+}
+```
+Adapter 建立時需要給定要轉換的動物類別 ( Adaptee )，當 Client 端呼叫 Adapter 的方法時，Adapter 就會呼叫傳入的 Adaptee 的對應方法。
+
+最後測試一下：
+```java
+public class Test {
+
+	public static void main(String[] args) {
+		BeSheep sheep1 = new SheepAdapter(new WhiteWolfTransfer());
+		sheep1.eatGrass();
+		
+		BeSheep sheep2 = new SheepAdapter(new GrayWolfTransfer());
+		sheep2.eatGrass();
+	}
+}
+```
 
 ## 小結
+* 使用時機：
+  * 需要使用既有的類別或套件的功能，但該類別或套件的介面與目前使用的類別介面不符
+  * 可能都是使用第三方套件，沒有原始碼且無法改動第三方函式庫時 
+
 #### 優點
 * 單一職責原則：將接口或數據轉換程式從應用程式的主要業務邏輯中分離。
 * 開放封閉原則：只要客戶端呼叫轉接器對象的方法，就能在不修改線有客戶端程式碼的情況下，在程式中添加新的轉接器。
@@ -59,7 +170,7 @@
 #### 缺點
 * 程式碼整體的複雜度增加，因為需要新增轉接器的接口介面和實作類別。
 
-![](/images/icon-question.png) Proxy Pattern 一定都要從 Client 端建立實際的服務對象傳入??? [範例](https://matthung0807.blogspot.com/2020/11/java-proxy-pattern.html)
-
 ## 參考
 * https://refactoringguru.cn/design-patterns/adapter
+* https://codingnote.cc/zh-tw/p/114284/
+* https://matthung0807.blogspot.com/2020/03/spring-jdbctemplate-and.html

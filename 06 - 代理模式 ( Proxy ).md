@@ -181,6 +181,8 @@ public class ExPartner {
 2. Client 端和目標物件中間多了一個帶禮物建，造成請求處理速度變慢。
 3. 系統的複雜度提高。
 
+![](/images/icon-question.png) Proxy Pattern 一定都要從 Client 端建立實際的服務對象傳入??? [範例](https://matthung0807.blogspot.com/2020/11/java-proxy-pattern.html)
+
 ## 其他代理
 | 代理類型 | 說明 | 實際應用 |
 | --- | --- | --- |
