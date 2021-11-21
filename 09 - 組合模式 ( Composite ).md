@@ -25,6 +25,11 @@ Component 介面定義了簡單項目和複雜項目所有共同的方法。
 
 ![](/images/composite-2.png)
 
+> 補充
+
+以上的模式由於 Leaf 跟 Composite 都實作同一個介面，代表在 Leaf 中不會用到的 `add()`、`remove()` 及 `getChild()` 方法也必須覆寫，此模式稱為**透明模式**。為了避免這種情況，可以採用另一種模式，稱之為**安全方式**。
+
+安全方式就是 Component 介面中不宣告以上三個方法，只宣告 `doService()`，這樣 Leaf 就不需要實作。但是 Composite 內就要特別在多加方法，有時候會造成用戶端調整的不便。
 
 ## 實際應用
 
@@ -47,30 +52,59 @@ public interface Component {
 
 * `Leaf` 子項目
 ```java
-public class Leaf implements Component{
+public class Leaf implements Component {
 
     @Override
     public void add(Component c) {
-        // TODO Auto-generated method stub
-        
+        // Leaf 不能 add, pring log
+        System.out.println("Leaf 不可再新增子元素");
     }
 
     @Override
     public void remove(Component c) {
-        // TODO Auto-generated method stub
-        
+        // Leaf 不能 remove, pring log
+        System.out.println("Leaf 無刪除子元素功能");
     }
 
     @Override
     public Component getComponent(int i) {
-        // TODO Auto-generated method stub
+        // Leaf 不能 getComponent, pring log
+        System.out.println("Leaf 無子元素");
         return null;
     }
 
     @Override
     public void doService() {
-        // TODO Auto-generated method stub
-        
+        System.out.println("Leaf：我真的有在做事!");
+    }
+}
+```
+
+```java
+public class MapleLeaf implements Component {
+
+    @Override
+    public void add(Component c) {
+        // MapleMapleLeaf 不能 add, pring log
+        System.out.println("MapleLeaf 不可再新增子元素");
+    }
+
+    @Override
+    public void remove(Component c) {
+        // MapleLeaf 不能 remove, pring log
+        System.out.println("MapleLeaf 無刪除子元素功能");
+    }
+
+    @Override
+    public Component getComponent(int i) {
+        // MapleLeaf 不能 getComponent, pring log
+        System.out.println("MapleLeaf 無子元素");
+        return null;
+    }
+
+    @Override
+    public void doService() {
+        System.out.println("MapleLeaf：我真的有在做事!!!");
     }
 }
 ```
@@ -110,14 +144,23 @@ public class Composite implements Component {
 
 * `Client` 測試用的客戶端
 ```java
-
+public class Client {
+	
+    public static void main(String[] args) {
+        Composite comosite = new Composite();
+        comosite.add(new Leaf());
+        comosite.add(new MapleLeaf());
+        
+        comosite.doService();
+    }
+}
 ```
 
 ## 小結
 
 #### 優點
 * 容易加入新類型的 Component
-對 Client 來說就不需要知道他所處理到的是 Leaf 或著是 Composite
+* 對 Client 來說就不需要知道他所處理到的是 Leaf 或著是 Composite
 
 #### 缺點
 * 難以約束 Compoiste 中 Component 的種類數量
