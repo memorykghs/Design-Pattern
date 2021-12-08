@@ -78,3 +78,6 @@ Flyweight 原本是拳擊術語，指最輕量的級別，蠅量 ( 享元 ) 模�
 * http://corrupt003-design-pattern.blogspot.com/2017/01/flyweight-pattern.html
 * O'REILLY - 深入淺出設計模式
 * https://ianjustin39.github.io/ianlife/design-pattern/flyweight-pattern/
+
+## 資源
+* https://visualvm.github.io/download.html
