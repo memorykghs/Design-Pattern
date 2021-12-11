@@ -1,7 +1,10 @@
 # 13 - 樣板模式 ( Template )
 
 ## Template Pattern 
+想不到例子了...
+也沒什麼好說的，總之就是模板方法中先定義一個給 Client 端呼叫的方法，該方法不能被子類別複寫，所以通常是 `public final method()`。然後將這個方法要達到的目標拆成一個一個比較小的 method，這些步驟可以由子類別實現，或是寫一個 default method 在模板中，要不要複寫由子類別決定。
 
+總之，就是定義一個演算法的骨架，並允許子類為其中的一個或者多個步驟提供實現。
 
 ## UML
 1. **抽象類別 Abstract­Class** 
@@ -142,10 +145,16 @@ public class Client {
 ## 小結
 
 #### 優點
-
+* 利用模板方法將相同處理邏輯的程式碼放到抽象父類中，可以提高程式碼的復用性。
+* 將不同的程式碼放到不同的子類中，通過對子類的擴展增加新的行為，提高程式碼的擴展性。
+* 把不變的行為寫在父類上，去除子類的重複程式碼，提供了一個很好的程式碼復用平台，符合開閉原則。
 
 #### 缺點
-
+* 類數目的增加，每一個抽象類都需要一個子類來實現，這樣導致類的個數增加。
+* 類數量的增加，間接地增加了系統實現的複雜度。
+* 繼承關係自身缺點，如果父類添加新的抽象方法，所有子類都要改一遍。
 
 ## 參考
 * https://refactoring.guru/design-patterns/template-method
+* https://codingnote.cc/zh-tw/p/83149/
+* https://www.youtube.com/watch?v=7ocpwK9uesw&list=PLrhzvIcii6GNjpARdnO4ueTUAVR9eMBpc&index=13
