@@ -27,5 +27,6 @@ Design Pattern 個人學習筆記
 
 ## 行為模式 Behavior Pattern
 
-## 參考
-https://codingnote.cc/zh-tw/p/83149/
+## 參考系列文章
+* https://codingnote.cc/zh-tw/p/83149/
+* [youlookwhat - DesignPattern](https://github.com/youlookwhat/DesignPattern)
