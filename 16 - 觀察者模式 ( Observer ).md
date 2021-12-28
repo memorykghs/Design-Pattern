@@ -20,6 +20,155 @@
 
 ## 實作
 
+![](/images/16-3.png)
+
+下面用在手機與電腦上新增地震通知作為範例，Observable 就是當地震發生時，由國家統一發送的簡訊通知；而 Observer 則是個人的手機或是電腦。
+
+###### Step 1 建立 Observable 介面與實例類別
+* `Observable`
+```java
+public interface Observable {
+	
+    public void add(Observer o);
+
+    public void remove(Observer o);
+
+    public void notifys();
+}
+```
+
+* `EarthquakeObservable`
+```java
+public class EarthquakeObservable implements Observable {
+
+    private String epicenter;
+
+    private static List<Observer> observerList;
+
+    public EarthquakeObservable() {
+        observerList = new LinkedList<>();
+    }
+
+    /**
+     * 在裝置上新增地震通知
+     */
+    @Override
+    public void add(Observer o) {
+        observerList.add(o);
+        System.out.println("已新增地震通知");
+    }
+
+    /**
+     * 在裝置上移除地震通知
+     */
+    @Override
+    public void remove(Observer o) {
+        observerList.remove(o);
+        System.out.println("已移除地震通知");
+    }
+
+    /**
+     * Observable 的核心啊!
+     */
+    @Override
+    public void notifys() {
+        observerList.stream().forEach(Observer::update);
+    }
+
+    /**
+     * 發生新地震
+     * @param epicenter
+     */
+    public void earthquakeHappen(String epicenter) {
+        this.epicenter = epicenter;
+        notifys();
+    }
+
+    /**
+     * 取得地震震央
+     * @return
+     */
+    public String getEpicenter() {
+        return this.epicenter;
+    }
+}
+```
+
+###### Step 2 建立 Observer 介面與實例物件
+
+* `Observer`
+```java
+public interface Observer {
+
+    public void update();
+}
+```
+
+* `Phone`
+```java
+public class Phone implements Observer {
+
+    private EarthquakeObservable earthquakeObservable;
+
+    public Phone(EarthquakeObservable earthquakeObservable) {
+        this.earthquakeObservable = earthquakeObservable;
+    }
+
+    @Override
+    public void update() {
+        System.out.println("Phone: 震央位於" + this.earthquakeObservable.getEpicenter());
+    }
+}
+```
+
+* `EarthquakeObservable`
+```java
+private EarthquakeObservable earthquakeObservable;
+	
+    public NoteBook(EarthquakeObservable earthquakeObservable) {
+        this.earthquakeObservable = earthquakeObservable;
+    }
+
+    @Override
+    public void update() {
+        System.out.println("NoteBook: 震央位於" + this.earthquakeObservable.getEpicenter());
+    }
+}
+```
+
+###### Step 3 測試
+```java
+public class Client {
+
+    public static void main(String[] args) {
+
+        EarthquakeObservable earthquakeObservable = new EarthquakeObservable();
+
+        Phone phone = new Phone(earthquakeObservable);
+        NoteBook notebook = new NoteBook(earthquakeObservable);
+
+        earthquakeObservable.add(phone);
+        earthquakeObservable.add(notebook);
+        
+        earthquakeObservable.earthquakeHappen("宜蘭外海");
+        earthquakeObservable.earthquakeHappen("台東");
+        
+        earthquakeObservable.remove(phone);
+    }
+}
+```
+
+印出的結果：
+```
+已新增地震通知
+已新增地震通知
+Phone: 震央位於宜蘭外海
+NoteBook: 震央位於宜蘭外海
+Phone: 震央位於台東
+NoteBook: 震央位於台東
+已移除地震通知
+```
+
 ## 小結
 
 #### 優點
@@ -35,3 +184,4 @@
 ## 參考
 * https://codingnote.cc/zh-tw/p/83149/
 * [Observer Pattern](https://www.youtube.com/watch?v=_BpmfnqjgzQ&list=PLrhzvIcii6GNjpARdnO4ueTUAVR9eMBpc&index=2)
+* https://medium.com/enjoy-life-enjoy-coding/design-pattern-%E5%8F%AA%E8%A6%81%E4%BD%A0%E6%83%B3%E7%9F%A5%E9%81%93-%E6%88%91%E5%B0%B1%E5%91%8A%E8%A8%B4%E4%BD%A0-%E8%A7%80%E5%AF%9F%E8%80%85%E6%A8%A1%E5%BC%8F-observer-pattern-feat-typescript-8c15dcb21622
