@@ -4,7 +4,7 @@
 是一種行為模式，可以讓使用者定義一系列演算法，並分別封裝起來放入獨立的類別中，讓它們之間可以互相替換，從而讓演算法的變化不會影響到使用演算法的用戶。
 
 ## UML
-![](/images/15-4.png)
+![](/images/strategy-4.png)
 
 * **Strategy 策略**
 所有具體策略的接口，定義應用程式中用於執行策略的方法。
@@ -22,7 +22,7 @@
 
 ## 實作
 
-![](/images/15-3.png)
+![](/images/strategy-3.png)
 
 首先建立 CameraModeStrategy。
 
@@ -111,7 +111,7 @@ Dynamic mode on. Take exercising photo.
 
 ## 小結
 在策略模式中，以替換實體類別取代繼承，原因是因為如果是用繼承，結構會長的像下面這樣：<br/>
-![](/images/15-2.png)
+![](/images/strategy-2.png)
 
 如果改用策略模式，就可以將獨立封裝好的功能傳入，以達到共用的目的。
 
